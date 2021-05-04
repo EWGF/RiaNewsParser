@@ -1,4 +1,4 @@
-﻿namespace RiaNewsParser
+﻿namespace RiaNewsParser.FileOutputServices
 {
     public class FileSaveHandler
     {

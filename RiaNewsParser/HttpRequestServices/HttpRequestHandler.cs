@@ -1,11 +1,9 @@
 ﻿using System.IO;
 using System.Net;
 
-namespace RiaNewsParser
+namespace RiaNewsParser.HttpRequestServices
 {
-    /// <summary>  
-    /// Возвращает исходный код страницы.
-    /// </summary>
+    
     public class HttpRequestHandler
     {
 
@@ -28,6 +26,9 @@ namespace RiaNewsParser
 
         }
 
+        /// <summary>  
+        /// Returns the HTML source code as string with HTML-markups
+        /// </summary>
         public string GetPageSourceCode()
         {
             var responseStream = GetHttpResponseStream();

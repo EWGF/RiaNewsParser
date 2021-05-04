@@ -1,4 +1,4 @@
-﻿namespace RiaNewsParser
+﻿namespace RiaNewsParser.ConversionServices
 {
     public class NewsSerrializer
     {
