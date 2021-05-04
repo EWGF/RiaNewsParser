@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Linq;
 using System;
+using RiaNewsParser.HttpRequestServices;
 
 namespace RiaNewsParser.ParsingServices
 {
@@ -27,16 +28,28 @@ namespace RiaNewsParser.ParsingServices
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(GetTextContentByClassName("article__info-date"));
-            //Console.WriteLine(GetTextContentByClassName("photoview__open"));
 
             Console.ForegroundColor = ConsoleColor.Yellow;
-            //TODO: re
-            var res = _hElements.Where(element => element.GetAttribute("className") == "photoview__open").FirstOrDefault().GetElementsByTagName("img")[0].GetAttribute("src");
-            Console.WriteLine(res);
+            var res = GetImageLinksFromElements("photoview__open");
+
+            foreach (var item in res)
+            {
+                HttpRequestHandler Hr = new HttpRequestHandler(item);
+                Console.WriteLine(Hr.GetBase64Image());
+            }
+            
 
         }
         
-        
+        /// <summary>
+        /// Returns URLs for all images form article
+        /// </summary>
+        private IEnumerable<string> GetImageLinksFromElements(string className) => _hElements.Where(element => element.GetAttribute("className") == className)
+                                                                                             .FirstOrDefault()
+                                                                                             .GetElementsByTagName("img")
+                                                                                             .Cast<HtmlElement>()
+                                                                                             .Select(element => element.GetAttribute("src"));
+
         /// <summary>
         /// Returns text content based on selected class name. Can be used to return the content from several elements.
         /// </summary>
