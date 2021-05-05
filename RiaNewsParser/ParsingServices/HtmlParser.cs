@@ -3,22 +3,23 @@ using System.Windows.Forms;
 using System.Linq;
 using System;
 using RiaNewsParser.HttpRequestServices;
+using RiaNewsParser.DataRepresentation;
 
 namespace RiaNewsParser.ParsingServices
 {
     public class HtmlParser
     {
         private string _htmlText;
-        private IEnumerable<HtmlElement> _hElements;
+        private IEnumerable<HtmlElement> _htmlElements;
 
         public HtmlParser(string htmlText)
         {
             _htmlText = htmlText;
-        }      
+        }
 
         public void StartParse()
         {
-            _hElements = ConvertToHtmlDocument(_htmlText).All.Cast<HtmlElement>();
+            _htmlElements = ConvertToHtmlDocument(_htmlText).All.Cast<HtmlElement>();
 
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(GetTextContentByClassName("article__title"));
@@ -30,38 +31,44 @@ namespace RiaNewsParser.ParsingServices
             Console.WriteLine(GetTextContentByClassName("article__info-date"));
 
             Console.ForegroundColor = ConsoleColor.Yellow;
-            var res = GetImageLinksFromElements("photoview__open");
+            var res = GetClassElementsByTags("photoview__open", "img").Select(element => element.GetAttribute("src")); //checked
+
+            var articleLinksTest = GetLinksFromArticleText("article__body js-mediator-article mia-analytics", "A");
 
             foreach (var item in res)
             {
-                HttpRequestHandler Hr = new HttpRequestHandler(item);
-                Console.WriteLine(Hr.GetBase64Image());
+                var a = new HttpRequestHandler(item).GetBase64ImageAsync();
+                a.Wait();
+                Console.WriteLine(a.Result);
             }
-            
-
         }
-        
+
         /// <summary>
-        /// Returns URLs for all images form article
+        /// Returns HtmlElement collection for all tags form article class
         /// </summary>
-        private IEnumerable<string> GetImageLinksFromElements(string className) => _hElements.Where(element => element.GetAttribute("className") == className)
-                                                                                             .FirstOrDefault()
-                                                                                             .GetElementsByTagName("img")
-                                                                                             .Cast<HtmlElement>()
-                                                                                             .Select(element => element.GetAttribute("src"));
+        private IEnumerable<HtmlElement> GetClassElementsByTags(string className, string tagName) => _htmlElements.Where(element => element.GetAttribute("className").Equals(className))
+                                                                                                                  .FirstOrDefault()
+                                                                                                                  ?.GetElementsByTagName(tagName)
+                                                                                                                  ?.Cast<HtmlElement>();
+
+        private IEnumerable<Links> GetLinksFromArticleText(string className, string tagName) => GetClassElementsByTags(className, tagName)
+                                                                                                .Where(element => !element.GetAttribute("className").Equals("banner__hidden-button"))
+                                                                                                .Select(element => new Links()
+                                                                                                {
+                                                                                                    LinkUrl = element.GetAttribute("HREF"),
+                                                                                                    LinkName = element.InnerText
+                                                                                                });
 
         /// <summary>
         /// Returns text content based on selected class name. Can be used to return the content from several elements.
         /// </summary>
-        private string GetTextContentByClassName(string className) => _hElements?.Where(element => element.GetAttribute("className") == className)?
-                                                                                .Select(element => element.InnerText)?
-                                                                                .Aggregate((f, s) =>  f + s);
+        private string GetTextContentByClassName(string className) => _htmlElements.Where(element => element.GetAttribute("className").Equals(className))
+                                                                                    .Select(element => element.InnerText)
+                                                                                    .Aggregate((f, s) => f + s);
 
         /// <summary>
         /// Converts the string with html-markups to html document.
         /// </summary>
-        /// <param name="html"></param>
-        /// <returns></returns>
         private HtmlDocument ConvertToHtmlDocument(string html)
         {
             using (WebBrowser browser = new WebBrowser())

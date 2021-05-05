@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataRepresentation\Article.cs" />
+    <Compile Include="DataRepresentation\Links.cs" />
     <Compile Include="FileOutputServices\FileSaveHandler.cs" />
     <Compile Include="ParsingServices\HtmlParser.cs" />
     <Compile Include="HttpRequestServices\HttpRequestHandler.cs" />

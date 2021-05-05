@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace RiaNewsParser.HttpRequestServices
 {
@@ -17,36 +18,39 @@ namespace RiaNewsParser.HttpRequestServices
         /// <summary>  
         /// Returns the HTML source code as string with HTML-markups
         /// </summary>
-        public string GetPageSourceCode()
+        public async Task<string> GetPageSourceCodeAsync()
         {
-            var responseStream = GetHttpResponseStream();
-            using (StreamReader sr = new StreamReader(responseStream))
+            using (var responseStream = await GetHttpResponseStreamAsync()) 
             {
-                return sr.ReadToEnd();
+                using (var sr = new StreamReader(responseStream))
+                {
+                    return sr.ReadToEnd();
+                }
             }
         }
 
         /// <summary>
         /// Returns the image from URL in base64 format
         /// </summary>
-        public string GetBase64Image()
-        {
+        public async Task<string> GetBase64ImageAsync()
+        {            
             using (var memoryStream = new MemoryStream())
             {
-                GetHttpResponseStream().CopyTo(memoryStream);
-                byte[] res = memoryStream.ToArray();
-                return Convert.ToBase64String(res);
+                using (var responseStream = await GetHttpResponseStreamAsync())
+                responseStream.CopyTo(memoryStream);
+                return Convert.ToBase64String(memoryStream.ToArray());
             }
         }
 
         /// <summary>
         /// Returns WebResponse from requested URL.
         /// </summary>
-        private Stream GetHttpResponseStream()
+        private async Task<Stream> GetHttpResponseStreamAsync()
         {
-            var request = WebRequest.Create(_requestedURL) as HttpWebRequest;
-            var response = request.GetResponse() as HttpWebResponse;
-            return response.GetResponseStream();
+            var request = WebRequest.Create(_requestedURL);
+            var response =  request.GetResponseAsync();
+            response.Wait();
+            return response.Result.GetResponseStream();
         }
     }
 
