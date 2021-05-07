@@ -1,6 +1,6 @@
 ﻿namespace RiaNewsParser.DataRepresentation
 {
-    public class Links
+    public class Link
     {
         public string LinkName { get; set; }
         public string LinkUrl { get; set; }

@@ -4,6 +4,7 @@ using System.Linq;
 using System;
 using RiaNewsParser.HttpRequestServices;
 using RiaNewsParser.DataRepresentation;
+using RiaNewsParser.ConversionServices;
 
 namespace RiaNewsParser.ParsingServices
 {
@@ -17,30 +18,17 @@ namespace RiaNewsParser.ParsingServices
             _htmlText = htmlText;
         }
 
-        public void StartParse()
+        public Article ParseArticle()
         {
             _htmlElements = ConvertToHtmlDocument(_htmlText).All.Cast<HtmlElement>();
+            var article = new Article();
 
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(GetTextContentByClassName("article__title"));
-
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(GetTextContentByClassName("article__text"));
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(GetTextContentByClassName("article__info-date"));
-
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            var res = GetClassElementsByTags("photoview__open", "img").Select(element => element.GetAttribute("src")); //checked
-
-            var articleLinksTest = GetLinksFromArticleText("article__body js-mediator-article mia-analytics", "A");
-
-            foreach (var item in res)
-            {
-                var a = new HttpRequestHandler(item).GetBase64ImageAsync();
-                a.Wait();
-                Console.WriteLine(a.Result);
-            }
+            article.AtricleTitle = GetTextContentByClassName("article__title");
+            article.ArticleText = GetTextContentByClassName("article__text");
+            article.PublicationDate = GetTextContentByClassName("article__info-date");
+            article.ArticleLinks = GetLinksFromArticleText("article__body js-mediator-article mia-analytics", "A").ToList();
+            article.ArticleImages = ImageConvertService.GetBase64Images(GetClassElementsByTags("photoview__open", "img").Select(element => element.GetAttribute("src")));
+            return article;
         }
 
         /// <summary>
@@ -51,9 +39,9 @@ namespace RiaNewsParser.ParsingServices
                                                                                                                   ?.GetElementsByTagName(tagName)
                                                                                                                   ?.Cast<HtmlElement>();
 
-        private IEnumerable<Links> GetLinksFromArticleText(string className, string tagName) => GetClassElementsByTags(className, tagName)
+        private IEnumerable<Link> GetLinksFromArticleText(string className, string tagName) => GetClassElementsByTags(className, tagName)
                                                                                                 .Where(element => !element.GetAttribute("className").Equals("banner__hidden-button"))
-                                                                                                .Select(element => new Links()
+                                                                                                .Select(element => new Link()
                                                                                                 {
                                                                                                     LinkUrl = element.GetAttribute("HREF"),
                                                                                                     LinkName = element.InnerText

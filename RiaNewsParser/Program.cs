@@ -24,17 +24,11 @@ namespace RiaNewsParser
             //4. Make an obj with info
             //5. Serrialize the obj
             //6. Save the serrialized obj
+            InputHandler exec = new InputHandler();
+            exec.Run();
 
-            string url = @"https://ria.ru/20201103/miting-1582793058.html";
 
-            var result = new HttpRequestHandler(url).GetPageSourceCodeAsync().Result;
-            HtmlParser hp = new HtmlParser(result);
-            hp.StartParse();
-
-            
-            Console.WriteLine();
-            Console.ReadLine();
+            //string url = @"https://ria.ru/20201103/miting-1582793058.html";
         }
     }
-
 }

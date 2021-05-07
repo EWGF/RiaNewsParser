@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace RiaNewsParser.DataRepresentation
 {
-    class Article
+    public class Article
     {
         public string AtricleTitle { get; set; }
         public string ArticleText { get; set; }
         public string PublicationDate { get; set; }
-        public IEnumerable<string> ArticleImages { get; set; }
-        public IEnumerable<Links> ArticleLinks { get; set; }
+        public List<string> ArticleImages { get; set; }
+        public List<Link> ArticleLinks { get; set; }
     }
 }
