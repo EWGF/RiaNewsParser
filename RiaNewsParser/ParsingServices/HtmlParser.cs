@@ -23,11 +23,11 @@ namespace RiaNewsParser.ParsingServices
             _htmlElements = ConvertToHtmlDocument(_htmlText).All.Cast<HtmlElement>();
             var article = new Article();
 
-            article.AtricleTitle = GetTextContentByClassName("article__title");
-            article.ArticleText = GetTextContentByClassName("article__text");
-            article.PublicationDate = GetTextContentByClassName("article__info-date");
-            article.ArticleLinks = GetLinksFromArticleText("article__body js-mediator-article mia-analytics", "A").ToList();
-            article.ArticleImages = ImageConvertService.GetBase64Images(GetClassElementsByTags("photoview__open", "img").Select(element => element.GetAttribute("src")));
+            article.AtricleTitle = GetTextContentByClassName(ParserSettings.ArticleTitleParseTag);
+            article.ArticleText = GetTextContentByClassName(ParserSettings.ArticleTextParseTag);
+            article.PublicationDate = GetTextContentByClassName(ParserSettings.ArticlePublicationDateParseTag);
+            article.ArticleLinks = GetLinksFromArticleText(ParserSettings.ArticleLinksParseTag, "A").ToList();
+            article.ArticleImages = ImageConvertService.GetBase64Images(GetClassElementsByTags(ParserSettings.ArticleImagesParseTag, "img").Select(element => element.GetAttribute("src")));
             return article;
         }
 

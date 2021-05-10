@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using RiaNewsParser.DataRepresentation;
+using RiaNewsParser.DBServices;
 using RiaNewsParser.FileOutputServices;
 using RiaNewsParser.HttpRequestServices;
 using RiaNewsParser.ParsingServices;
@@ -11,23 +12,22 @@ namespace RiaNewsParser
     {
         public Article ParsedArticle { get; set; }
         public string ArticleUrl { get; private set; }
-        public string FileSavePath { get; private set; }
-        public string DBSavePath { get; private set; }
+
 
         public void SaveDB()
         {
-            throw new NotImplementedException();
+            DBAcessHandler dBAcessHandler = new DBAcessHandler();
+            dBAcessHandler.SaveArticle(ParsedArticle);
         }
 
-        public void SaveArticle()
+        public void Save()
         {
-            FileSaveHandler fs = new FileSaveHandler();
+            ArticleSaveHandler fs = new ArticleSaveHandler(ParsedArticle, ParserSettings.FileSavePath);
 
-            fs.SaveArticleJSON(FileSavePath, ParsedArticle);
-            fs.SaveArticleXML(FileSavePath, ParsedArticle);
+            fs.SaveArticle();
 
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Article saved to {FileSavePath}!");
+            Console.WriteLine($"Article saved to {ParserSettings.FileSavePath}!");
         }
 
         public void SetDBPath()
@@ -57,13 +57,13 @@ namespace RiaNewsParser
                               $"\n{ParsedArticle.PublicationDate}" +
                               $"\nLinks count: {ParsedArticle.ArticleLinks}");
         }
-   
+
         public void SetSavePath()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"Paste the required path to save articles:");
-            FileSavePath = Console.ReadLine();
-            Console.WriteLine($"Save path succsessfully set to: {FileSavePath}");
+            ParserSettings.FileSavePath = Console.ReadLine();
+            Console.WriteLine($"Save path succsessfully set to: {ParserSettings.FileSavePath}");
         }
 
         public void PrintHelp()
@@ -76,6 +76,7 @@ namespace RiaNewsParser
                               $"\n-setSavePath : sets a path for saving articles" +
                               $"\n-start : to start parsing" +
                               $"\n-save : to save the parsed article" +
+                              $"\n-saveDB : to save the parsed article in Data Base" +
                               $"\n-exit : to qiut the programm\n");
         }
     }

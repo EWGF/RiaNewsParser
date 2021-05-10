@@ -47,8 +47,8 @@ namespace RiaNewsParser
                 case "-setDBPath":
                     exec.SetDBPath();
                     break;
-                case "-saveArticle":
-                    exec.SaveArticle();
+                case "-save":
+                    exec.Save();
                     break;
                 case "-saveDB":
                     exec.SaveDB();
