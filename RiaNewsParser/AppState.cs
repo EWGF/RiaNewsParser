@@ -1,6 +1,6 @@
 ﻿namespace RiaNewsParser
 {
-    public enum ParserState
+    public enum AppState
     {
         Running, 
         Stopped

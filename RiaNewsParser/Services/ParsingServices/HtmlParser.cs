@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
-using System;
-using RiaNewsParser.HttpRequestServices;
 using RiaNewsParser.DataRepresentation;
-using RiaNewsParser.ConversionServices;
+using RiaNewsParser.Services.ConversionServices;
 
-namespace RiaNewsParser.ParsingServices
+namespace RiaNewsParser.Services.ParsingServices
 {
     public class HtmlParser
     {
@@ -23,11 +21,11 @@ namespace RiaNewsParser.ParsingServices
             _htmlElements = ConvertToHtmlDocument(_htmlText).All.Cast<HtmlElement>();
             var article = new Article();
 
-            article.AtricleTitle = GetTextContentByClassName(ParserSettings.ArticleTitleParseTag);
-            article.ArticleText = GetTextContentByClassName(ParserSettings.ArticleTextParseTag);
-            article.PublicationDate = GetTextContentByClassName(ParserSettings.ArticlePublicationDateParseTag);
-            article.ArticleLinks = GetLinksFromArticleText(ParserSettings.ArticleLinksParseTag, "A").ToList();
-            article.ArticleImages = ImageConvertService.GetBase64Images(GetClassElementsByTags(ParserSettings.ArticleImagesParseTag, "img").Select(element => element.GetAttribute("src")));
+            article.AtricleTitle = GetTextContentByClassName(AppSettings.ArticleTitleParseTag);
+            article.ArticleText = GetTextContentByClassName(AppSettings.ArticleTextParseTag);
+            article.PublicationDate = GetTextContentByClassName(AppSettings.ArticlePublicationDateParseTag);
+            article.ArticleLinks = GetLinksFromArticleText(AppSettings.ArticleLinksParseTag, "A").ToList();
+            article.ArticleImages = ImageConvertService.GetBase64Images(GetClassElementsByTags(AppSettings.ArticleImagesParseTag, "img").Select(element => element.GetAttribute("src")));
             return article;
         }
 
@@ -39,6 +37,9 @@ namespace RiaNewsParser.ParsingServices
                                                                                                                   ?.GetElementsByTagName(tagName)
                                                                                                                   ?.Cast<HtmlElement>();
 
+        /// <summary>
+        /// Returns Links from article text
+        /// </summary>
         private IEnumerable<Link> GetLinksFromArticleText(string className, string tagName) => GetClassElementsByTags(className, tagName)
                                                                                                 .Where(element => !element.GetAttribute("className").Equals("banner__hidden-button"))
                                                                                                 .Select(element => new Link()

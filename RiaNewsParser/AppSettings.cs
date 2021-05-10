@@ -1,6 +1,8 @@
-﻿namespace RiaNewsParser
+﻿using System;
+
+namespace RiaNewsParser
 {
-    public static class ParserSettings
+    public static class AppSettings
     {
         //Default file saving paths and names
         public static string FileSavePath { get; set; } = @"C:\RiaNewsParser\Articles";
@@ -14,6 +16,5 @@
         public static string ArticlePublicationDateParseTag { get; set; } = "article__info-date";
         public static string ArticleLinksParseTag { get; set; } = "article__body js-mediator-article mia-analytics";
         public static string ArticleImagesParseTag { get; set; } = "photoview__open";
-
     }
 }

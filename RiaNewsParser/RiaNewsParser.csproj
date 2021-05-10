@@ -67,19 +67,19 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConversionServices\ImageConvertService.cs" />
+    <Compile Include="ConsoleUIHandler\ExceptionConsoleLogger.cs" />
+    <Compile Include="Services\ConversionServices\ImageConvertService.cs" />
     <Compile Include="DataRepresentation\Article.cs" />
     <Compile Include="DataRepresentation\Link.cs" />
-    <Compile Include="DBServices\DBAcessHandler.cs" />
-    <Compile Include="Executor.cs" />
-    <Compile Include="FileOutputServices\DirectoryChecker.cs" />
-    <Compile Include="InputHandler.cs" />
-    <Compile Include="FileOutputServices\ArticleSaveHandler.cs" />
-    <Compile Include="ParserSettings.cs" />
-    <Compile Include="ParserState.cs" />
-    <Compile Include="ParsingServices\HtmlParser.cs" />
-    <Compile Include="HttpRequestServices\HttpRequestHandler.cs" />
-    <Compile Include="ConversionServices\NewsSerrializer.cs" />
+    <Compile Include="Services\DBServices\DBAcessHandler.cs" />
+    <Compile Include="ConsoleUIHandler\Executor.cs" />
+    <Compile Include="Services\FileOutputServices\DirectoryChecker.cs" />
+    <Compile Include="ConsoleUIHandler\InputHandler.cs" />
+    <Compile Include="Services\FileOutputServices\ArticleSaveHandler.cs" />
+    <Compile Include="AppSettings.cs" />
+    <Compile Include="AppState.cs" />
+    <Compile Include="Services\ParsingServices\HtmlParser.cs" />
+    <Compile Include="Services\HttpRequestServices\HttpRequestHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -87,5 +87,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

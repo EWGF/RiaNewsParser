@@ -1,12 +1,11 @@
-﻿using RiaNewsParser.HttpRequestServices;
-using System;
+﻿using RiaNewsParser.Services.HttpRequestServices;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RiaNewsParser.ConversionServices
+namespace RiaNewsParser.Services.ConversionServices
 {
+    /// <summary>
+    /// Converts and images from URLs to base64 format.
+    /// </summary>
     public static class ImageConvertService
     {
         public static List<string> GetBase64Images(IEnumerable<string> urls)
